@@ -80,10 +80,6 @@ function start(server, key) {
 			for (var id in myClient.balls) {
 				if (myClient.my_balls.indexOf(id) != -1) continue;            // Skip own cell
 				var cell = myClient.balls[id];
-				if (cell.virus) {
-					nearest = cell;
-					break;
-				}
 				if (cell.virus) continue;                                     // Skip virus
 				if (cell.size * 1.25 > player.size) continue;                 // Skip bigger cells
 				
