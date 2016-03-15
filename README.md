@@ -1,5 +1,7 @@
 # agar-lvlgen
 
+Agar-LvLGeN is a standalone implementation to farm XP at agar.
+
 ###### How-To:
 1. Get your Facebook-Cookies, and put them into the config.
 2. Edit the config
