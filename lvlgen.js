@@ -44,7 +44,7 @@ var spawnTask = setInterval(function() {
 	agarClient.servers.createParty({region: getRegionParty()}, function(e) {
 		var server = e.server;
 		var key = e.key;
-		if (ips.indexOf(server) != -1) return; // EIGENTLICH 3X
+		if (ips.indexOf(server) != -1) return;
 		start(server, key);
 	});
 	if (bots.length >= config.botLimit) clearInterval(spawnTask);
