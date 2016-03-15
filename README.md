@@ -8,7 +8,7 @@
 ## Config
 ###### How to edit your config:
 When you have your cookies, replace them in the config to make it farm for your account.
-Aditionally, you can specify the name of your bots, the status delay and the regions.
+Aditionally, you can specify the name of your bots, the amount, the status delay and the regions.
 
 When you first downloaded the lvlgen, your config should look something like this:
 ```
@@ -21,6 +21,7 @@ module.exports = {
 	name: "EATER OF POTATO",
 	
 	// Advanced
+	botLimit: 200,
 	regions: ["BR-Brazil", "CN-China", "EU-London", "JP-Tokyo", "RU-Russia", "SG-Singapore", "TK-Turkey", "US-Atlanta"],
 	statusDelay: 1000
 }
