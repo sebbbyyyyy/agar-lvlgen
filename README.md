@@ -1,7 +1,5 @@
 # agar-lvlgen
 
-Agar-LvLGeN is a standalone implementation to farm XP at agar.
-
 ###### How-To:
 1. Get your Facebook-Cookies, and put them into the config.
 2. Edit the config
@@ -10,7 +8,7 @@ Agar-LvLGeN is a standalone implementation to farm XP at agar.
 ## Config
 ###### How to edit your config:
 When you have your cookies, replace them in the config to make it farm for your account.
-Aditionally, you can specify the status delay and the regions.
+Aditionally, you can specify the name of your bots, the status delay and the regions.
 
 When you first downloaded the lvlgen, your config should look something like this:
 ```
