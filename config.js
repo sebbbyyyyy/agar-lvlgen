@@ -1,10 +1,10 @@
 module.exports = {
 	// Required
-	c_user: "c_user",
-	datr: "datr",
-	xs: "xs",
+	c_user: "100011434068289",
+	datr: "waWgVim4L75xF8mRKbuwypNB",
+	xs: "91%3A4PGzrZ0eqqjvLw%3A2%3A1458124575%3A-1",
 	
-	name: "agar-lvlgen",
+	name: "www.xpbots.ga :)",
 	
 	// Advanced
 	botLimit: 200,
