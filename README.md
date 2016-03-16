@@ -14,9 +14,9 @@ When you first downloaded the lvlgen, your config should look something like thi
 ```
 module.exports = {
 	// Required
-	c_user: "<c_user>",
-	datr: "<datr>",
-	xs: "<xs>",
+	c_user: "c_user",
+	datr: "datr",
+	xs: "xs",
 	
 	name: "EATER OF POTATO",
 	
