@@ -4,7 +4,7 @@ module.exports = {
 	datr: "datr",
 	xs: "xs",
 	
-	name: "www.xpbots.ga :)",
+	name: "agar-lvlgen",
 	
 	// Advanced
 	botLimit: 200,
