@@ -14,53 +14,82 @@ account.c_user = config.c_user;
 account.datr = config.datr;
 account.xs = config.xs;
 
-account.requestFBToken(function(tkn, info) {
-    token = tkn;
-});
-
-var regionCounterFFA = 0,
-	regionCounterParty = 0;
-
-function getRegionFFA() {
-	regionCounterFFA++;
-	if (regionCounterFFA >= regions.length) regionCounterFFA = 0;
-	return regions[regionCounterFFA];
+Array.prototype.contains = function(element) {
+	return this.indexOf(element) >= 0;
+}
+Array.prototype.add = Array.prototype.push;
+Array.prototype.remove = function(element) {
+	if (this.contains(element)) this.splice(this.indexOf(element), 1);
 }
 
-function getRegionParty() {
-	regionCounterParty++;
-	if (regionCounterParty >= regions.length) regionCounterParty = 0;
-	return regions[regionCounterParty];
+// Check if no mode is enabled
+
+!function() {
+	var serverFound = false,
+		regionFound = config.regions.length > 0;
+	for (var i in config.servers) serverFound = (serverFound || config.servers[i]);
+	if (serverFound && regionFound) return;
+	console.log("No mode/region enabled or found. oh well");
+	process.exit();
+}();
+
+account.requestFBToken(function(tkn, info) {
+    token = tkn;
+	console.log("Got token:", token);
+});
+
+var regionCounter = 0;
+
+function getRegion() {
+	regionCounter++;
+	if (regionCounter >= regions.length) regionCounter = 0;
+	return regions[regionCounter];
+}
+
+function getServerOptions() {
+	return {region: getRegion()};
 }
 
 var spawnTask = setInterval(function() {	
 	if (token == null) return;
-	agarClient.servers.getFFAServer({region: getRegionFFA()}, function(e) {
+	
+	function callBack(e) {
 		var server = e.server;
 		var key = e.key;
-		if (ips.indexOf(server) != -1) return;
 		start(server, key);
-	});
-	agarClient.servers.createParty({region: getRegionParty()}, function(e) {
-		var server = e.server;
-		var key = e.key;
-		if (ips.indexOf(server) != -1) return;
-		start(server, key);
-	});
+	}
+	
+	if (config.servers.ffa) {
+		agarClient.servers.getFFAServer(getServerOptions(), callBack);
+	}
+	
+	if (config.servers.teams) {
+		agarClient.servers.getTeamsServer(getServerOptions(), callBack);
+	}
+	
+	if (config.servers.experimental) {
+		agarClient.servers.getExperimentalServer(getServerOptions(), callBack);
+	}
+	
+	if (config.servers.party) {
+		agarClient.servers.createParty(getServerOptions(), function(e) {
+			var server = e.server;
+			var key = e.key; // Key = Party Code
+			start(server, "");
+		});
+	}
 	if (bots.length >= config.botLimit) clearInterval(spawnTask);
-}, 100);
+}, config.spawnDelay);
 var clientIdCounter = 0;
 var bots = [];
-var ips = [];
 
 function start(server, key) {
 	var myClient = new agarClient("Client_" + clientIdCounter++);
-	ips.push(server);
 	myClient.debug = 0;
 	myClient.auth_token = token;
+	var myBotObj = {spawned: false, client: myClient};
 	myClient.on('disconnect', function() {
-		if (bots.indexOf(myClient) >= 0) bots.splice(bots.indexOf(myClient), 1);
-		if (ips.indexOf(server) >= 0) ips.splice(ips.indexOf(server), 1);
+		bots.remove(myClient);
 		clearInterval(myClient.sendInterval);
 		myClient = null;
 	});
@@ -68,7 +97,7 @@ function start(server, key) {
 		preventCrash();
 	});
 	myClient.on('connected', function() {
-		bots.push(myClient);
+		bots.add(myBotObj);
 		myClient.spawn(STATIC_NAME);
 		myClient.sendInterval = setInterval(function() {
 			function getDistance(cell1, cell2) {
@@ -97,7 +126,11 @@ function start(server, key) {
 			myClient.moveTo(nearest.x, nearest.y);
 		}, 40);
 	});
+	myClient.on('myNewBall', function() {
+		myBotObj.spawned = true;
+	});
 	myClient.on('lostMyBalls', function() {
+		myBotObj.spawned = false;
 		myClient.spawn(STATIC_NAME);
 	});
 	myClient.connect("ws://" + server, key);
@@ -105,9 +138,11 @@ function start(server, key) {
 
 setInterval(function() {
 	var totalScore = 0;
-	for (var i in bots) totalScore += bots[i].score;
-	var avgScore = (totalScore / bots.length).toFixed(0);
-	debugObj.amount = bots.length;
+	var spawnedCount = 0;
+	for (var i in bots) bots[i].spawned && (spawnedCount++, totalScore += bots[i].client.score);
+	var avgScore = (totalScore / Math.max(1, spawnedCount)).toFixed(0);
+	debugObj.connected = bots.length;
+	debugObj.spawned = spawnedCount;
 	debugObj.totalScore = totalScore;
 	debugObj.avgScore = avgScore;
 	console.log(debugObj);
