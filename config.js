@@ -1,8 +1,8 @@
 module.exports = {
 	// Required
-	c_user: "100011434068289",
-	datr: "waWgVim4L75xF8mRKbuwypNB",
-	xs: "92%3Aqkn2vpOq3gDqSw%3A2%3A1458040635%3A-1",
+	c_user: "c_user",
+	datr: "datr",
+	xs: "xs",
 	
 	name: "agar-lvlgen",
 	
